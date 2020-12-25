@@ -1,0 +1,63 @@
+$colors:white;
+$cwidth:982px;
+
+@mixin wh($w,$h) {
+	width: $w;
+	height: $h;
+}
+// 三角形
+@mixin triangleB($s,$c) {
+	border: $s solid;
+	border-color: transparent transparent $c transparent;
+}
+
+@mixin triangleT($s,$c) {
+	border: $s solid;
+	border-color: $c transparent transparent transparent;
+}
+
+@mixin triangleL($s,$c) {
+	border: $s solid;
+	border-color: transparent transparent transparent $c;
+}
+
+@mixin triangleR($s,$c) {
+	border: $s solid;
+	border-color: transparent $c transparent transparent;
+}
+
+.all-container {
+	@include wh(1100px, 100%);
+	margin: 0 auto;
+}
+
+
+.all-playbar-bg {
+	background: url('~assets/img/playbar.png') no-repeat 0 9999px;
+}
+
+.all-hover-cursor {
+	&:hover {
+		cursor: pointer;
+	}
+}
+
+/* 线条 -> 左边 */
+// <i class="el-icon-s-help"></i>
+// <div class="left-t">热门推荐</div>
+.sline-left-icon{
+	color: red;
+	line-height: 20px;
+}
+.sline-left-t {
+	line-height: 20px;
+	font-size: 20px;
+	color: #333333;
+	margin: 0 10px;
+}
+
+
+* {
+	margin: 0;
+	padding: 0;
+}
