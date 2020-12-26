@@ -18,7 +18,7 @@
         <div class="mask all-hover-cursor">
           <img :src="musicInfo.picurl" alt="">
         </div>
-        <div class="center-line" @click.stop.prevent="clickLine()">
+        <div class="center-line" @click.stop.prevent="clickLine">
           <div class="star-info">
             <div class="star-info-music" v-show="musicInfo && musicInfo.name">{{musicInfo.name}}</div>
             <div class="star-info-name" v-show="musicInfo && musicInfo.artistsname">{{musicInfo.artistsname}}</div>
@@ -36,8 +36,8 @@
         <div class="volume all-playbar-bg">
           <a href="javascript:;" class="all-playbar-bg" title="" @click="isShowVolume = !isShowVolume"></a>
           <div class="volume-control all-playbar-bg" v-show="isShowVolume">
-            <div class="block lines" >
-              <el-slider v-model="volumeValue" vertical :show-tooltip="false" height="115px"  :input="setVolume()">
+            <div class="block lines">
+              <el-slider v-model="volumeValue" vertical :show-tooltip="false" height="115px" :input="setVolume()">
               </el-slider>
             </div>
           </div>
@@ -46,14 +46,14 @@
           <a href="javascript:;" class="all-playbar-bg" title="循环"></a>
         </div>
         <div class="panel">
-          <a href="javascript:;" class="all-playbar-bg" title="播放列表">
+          <a href="javascript:;" class="all-playbar-bg" title="播放列表" @click="showBar">
             <div class="panel-number">{{allMusic.length}}</div>
           </a>
         </div>
       </div>
 
     </div>
-    <audio :src="musicInfo.url" ref="music"></audio>
+    <audio :src="musicInfo.url" ref="music" @playing="musicPlaying()" @pause="musicPause()"></audio>
   </div>
 </template>
 
@@ -65,6 +65,11 @@
     mapState,
     mapMutations
   } from 'vuex'
+
+  import {
+    getLyric,
+    getId
+  } from 'network/info.js'
 
   export default {
     name: '',
@@ -92,14 +97,16 @@
         musicLoad: false,
         isLock: false,
         volumeValue: 50,
-        isShowVolume:false
+        isShowVolume: false,
+        scrollTimer: null,
+        gid: 0
       }
     },
     components: {
 
     },
     methods: {
-      ...mapMutations(['addList']),
+      ...mapMutations(['addList','changeLyric']),
       downCur(e) {
         this.isCanMove = true
         this.startX = this.moveX = e.clientX
@@ -128,9 +135,9 @@
       nextMusic() {
         if (this.nowList >= this.allMusic.length - 1) {
           this.getMusic()
-          console.log(this.allMusic);
         } else {
           this.musicInfo = this.allMusic[++this.nowList]
+          this.$bus.$emit('_changeLyric', this.allMusic[this.nowList].lyric)
         }
         this.playMusic()
       },
@@ -138,8 +145,10 @@
         if (this.nowList === 0 && this.allMusic.length !== 1) {
           this.nowList = this.allMusic.length - 1
           this.musicInfo = this.allMusic[this.nowList]
+          this.$bus.$emit('_changeLyric', this.allMusic[this.nowList].lyric)
         } else if (this.nowList != 0) {
           this.musicInfo = this.allMusic[--this.nowList]
+          this.$bus.$emit('_changeLyric', this.allMusic[this.nowList].lyric)
         }
         this.playMusic()
       },
@@ -155,6 +164,7 @@
         }, 100)
       },
       clickLine(e) {
+        console.log(e);
         if (this.isCanMove) return;
         this.$refs.line.style.width = e.offsetX + 'px'
         this.$refs.cur.style.left = this.$refs.line.offsetWidth - this.deviation + 'px'
@@ -185,14 +195,43 @@
         this.musicLoad = false
         getRandom('热歌榜', 'json').then((data) => {
           this.musicInfo = data.data
-          this.allMusic.push(this.musicInfo)
+          // this.musicInfo.url = 'http://music.163.com/song/media/outer/url?id=33894312'
+          let i = (this.allMusic.push(this.musicInfo)) - 1
           this.addList(this.musicInfo)
+
+          this.getId(this.musicInfo.name, i)
+
           if (this.allMusic.length >= 51) {
             this.allMusic.shift()
           }
           this.nowList++
         })
       },
+      getId(name, index) {
+        getId(name).then((data) => {
+          this.gid = data.result.songs[0].id
+          this.getLyric(this.gid, index)
+        })
+      },
+      getLyric(id, index) {
+        getLyric(id).then((data) => {
+          this.$bus.$emit('_changeLyric', data.lrc.lyric)
+          this.allMusic[index].lyric = data.lrc.lyric
+        })
+      },
+      showBar() {
+        this.$emit('showBar')
+      },
+      musicPlaying() {
+        let that = this
+        if (this.scrollTimer) clearInterval(this.scrollTimer)
+        this.scrollTimer = setInterval(() => {
+          that.$bus.$emit('_scrollLyric', that.$refs.music.currentTime)
+        })
+      },
+      musicPause() {
+        clearInterval(this.scrollTimer)
+      }
     },
     mounted() {
       this.musicLength = this.$refs.music.duration
@@ -413,6 +452,8 @@
           }
 
           .volume-control {
+            position: absolute;
+            z-index: 99;
             margin-top: -204px;
             width: 30px;
             height: 160px;
@@ -457,6 +498,10 @@
             font-size: 12px;
             display: flex;
             align-items: center;
+
+            &:hover {
+              background-position-y: -98px;
+            }
 
             .panel-number {
               position: absolute;

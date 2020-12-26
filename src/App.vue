@@ -2,8 +2,9 @@
   <div id="app">
     <head-nav-bar></head-nav-bar>
     <router-view/>
-    <play-bar></play-bar>
-    <main-bar></main-bar>
+    <!-- :lyricData="getL" -->
+    <main-bar v-show="showMainBar"></main-bar>
+    <play-bar @showBar="showMainBar = !showMainBar"></play-bar>
   </div>
 </template>
 
@@ -17,6 +18,17 @@
       HeadNavBar,
       PlayBar,
       MainBar
+    },
+    data(){
+      return {
+        showMainBar: true
+      }
+    },
+    computed: {
+      getL() {
+        console.log(this.$store.getters.getLyric);
+        return this.$store.getters.getLyric
+      }
     }
   }
 </script>

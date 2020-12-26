@@ -8,7 +8,8 @@ import getters from './getters'
 Vue.use(Vuex)
 
 const state = {
-  musicList: []
+  musicList: [],
+  lyricString: ''
 }
 
 const store = new Vuex.Store({
