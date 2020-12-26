@@ -61,6 +61,10 @@
   import {
     getRandom
   } from 'network/random.js'
+  import {
+    mapState,
+    mapMutations
+  } from 'vuex'
 
   export default {
     name: '',
@@ -95,6 +99,7 @@
 
     },
     methods: {
+      ...mapMutations(['addList']),
       downCur(e) {
         this.isCanMove = true
         this.startX = this.moveX = e.clientX
@@ -154,7 +159,6 @@
         this.$refs.line.style.width = e.offsetX + 'px'
         this.$refs.cur.style.left = this.$refs.line.offsetWidth - this.deviation + 'px'
         this.setMusicLength()
-        console.log('click');
       },
       playMusic() {
         this.isPlay = true
@@ -182,6 +186,7 @@
         getRandom('热歌榜', 'json').then((data) => {
           this.musicInfo = data.data
           this.allMusic.push(this.musicInfo)
+          this.addList(this.musicInfo)
           if (this.allMusic.length >= 51) {
             this.allMusic.shift()
           }
