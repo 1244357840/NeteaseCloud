@@ -70,6 +70,7 @@
     getLyric,
     getId
   } from 'network/info.js'
+  import urlHead from 'network/head.js'
 
   export default {
     name: '',
@@ -195,9 +196,9 @@
         this.musicLoad = false
         getRandom('热歌榜', 'json').then((data) => {
           this.musicInfo = data.data
-          // this.musicInfo.url = 'http://music.163.com/song/media/outer/url?id=33894312'
           let i = (this.allMusic.push(this.musicInfo)) - 1
-          this.addList(this.musicInfo)
+          this.allMusic[i].listShow = true
+          this.addList(this.allMusic[i])
 
           this.getId(this.musicInfo.name, i)
 
@@ -231,14 +232,38 @@
       },
       musicPause() {
         clearInterval(this.scrollTimer)
+      },
+      addListInfo(info) {
+        console.log(info);
+        let artistsname = info.artists[0].name
+        let name = info.name
+        let picurl = info.album.artist.img1v1Url || info.album.picUrl
+        let id = info.id
+        let url = urlHead + (info.id).toString()
+        console.log(url);
+        let i = this.allMusic.push({
+          artistsname,
+          name,
+          picurl,
+          url,
+          id
+        })
+        this.getLyric(id, i - 1)
+        this.musicInfo = this.allMusic[i-1]
+        this.addList(this.musicInfo)
+        if (this.allMusic.length >= 51) {
+          this.allMusic.shift()
+        }
+        this.nowList++
+        this.playMusic()
       }
     },
     mounted() {
+      let that = this
       this.musicLength = this.$refs.music.duration
       this.lineWidth = this.$refs.progress.offsetWidth
       this.documentEvent.moveCur = this.moveCur
       this.documentEvent.upCur = this.upCur
-      let that = this
       document.addEventListener('mousemove', function(e) {
         that.documentEvent.moveCur && that.documentEvent.moveCur(e)
       })
@@ -250,10 +275,9 @@
         this.musicLoad = true
         this.isPlay && this.playMusic()
       }
-      // setTimeout(() => {
-      //   this.documentEvent = {}
-      //   console.log(this.documentEvent);
-      // },5000)
+      this.$bus.$on('addMusicList', (info) => {
+        that.addListInfo(info)
+      })
     }
   }
 </script>

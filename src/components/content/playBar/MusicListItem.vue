@@ -8,7 +8,7 @@
     </div>
     <div class="center-btn">
       <slot name="center-btn">
-        <music-pancel-icon></music-pancel-icon>
+        <music-pancel-icon @clickIcon4="removeList"></music-pancel-icon>
       </slot>
     </div>
     <div class="right-name">
@@ -41,14 +41,18 @@
       MusicPancelIcon
     },
     methods: {
-
+      removeList() {
+        console.log(this.info.listShow = false);
+      }
     },
+    mounted() {
+    }
   }
 </script>
 
 <style scoped lang="scss">
   .item {
-    width: 553px;
+    width: 100%;
     height: 28px;
     background-color: #333;
     z-index: 99;

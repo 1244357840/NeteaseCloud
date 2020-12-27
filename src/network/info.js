@@ -10,7 +10,6 @@ export function getLyric(id) {
 }
 
 export function getId(keywords) {
-  console.log(keywords);
   return axios({
     url:'/search',
     params: {

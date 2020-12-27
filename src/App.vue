@@ -3,8 +3,9 @@
     <head-nav-bar></head-nav-bar>
     <router-view/>
     <!-- :lyricData="getL" -->
-    <main-bar v-show="showMainBar"></main-bar>
+    <main-bar :showBar="showMainBar"></main-bar>
     <play-bar @showBar="showMainBar = !showMainBar"></play-bar>
+    <foot></foot>
   </div>
 </template>
 
@@ -12,16 +13,18 @@
   import HeadNavBar from 'components/content/HeadNavBar.vue'
   import PlayBar from 'components/content/playBar/PlayBar.vue'
   import MainBar from 'components/content/MusicMainbar/MainBar.vue'
+  import Foot from 'components/content/foot/Foot.vue'
 
   export default {
     components: {
       HeadNavBar,
       PlayBar,
-      MainBar
+      MainBar,
+      Foot
     },
     data(){
       return {
-        showMainBar: true
+        showMainBar: false
       }
     },
     computed: {
@@ -29,6 +32,9 @@
         console.log(this.$store.getters.getLyric);
         return this.$store.getters.getLyric
       }
+    },
+    methods: {
+
     }
   }
 </script>

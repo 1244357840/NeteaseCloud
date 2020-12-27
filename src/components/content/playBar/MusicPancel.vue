@@ -1,17 +1,19 @@
 <template>
   <div class="music-pancel" v-if="musicList.length != 0">
     <div class="content">
-      <music-pancel-item v-for="(item,index) in musicList" :key="index">
-        <div class="left-icon" slot="left-icon">
-          <i class="el-icon-caret-right"></i>
-        </div>
-        <div slot="left-name">
-          {{item.name}}
-        </div>
-        <div class="right-name" slot="right-name">
-          {{item.artistsname}}
-        </div>
-      </music-pancel-item>
+      <div v-for="(item,index) in musicList" :key="index">
+        <music-pancel-item v-if="item.listShow" :info="item">
+          <div class="left-icon" slot="left-icon">
+            <i class="el-icon-caret-right"></i>
+          </div>
+          <div slot="left-name">
+            {{item.name}}
+          </div>
+          <div class="right-name" slot="right-name">
+            {{item.artistsname}}
+          </div>
+        </music-pancel-item>
+      </div>
     </div>
   </div>
 </template>
@@ -49,9 +51,7 @@
     components: {
       MusicPancelItem,
     },
-    methods: {
-
-    }
+    methods: {}
   }
 </script>
 
@@ -60,11 +60,13 @@
     overflow: hidden;
     height: 196px;
     display: flex;
+    width: 553px;
     flex-direction: column;
 
     .content {
       height: 100%;
       overflow-y: scroll;
+
       &::-webkit-scrollbar {
         background: black;
         width: 6px;

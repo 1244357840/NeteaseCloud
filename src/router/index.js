@@ -11,6 +11,8 @@ const Artist = () => import('views/discover/artist/Artist.vue')
 const Djradio = () => import('views/discover/djradio/Djradio.vue')
 const Recommend = () => import('views/discover/recommend/Recommend.vue')
 
+const Search = () => import('views/search/Search.vue')
+
 const routes = [{
     path: '/',
     redirect: '/discover'
@@ -21,7 +23,7 @@ const routes = [{
     children: [{
         path: '/',
         component: Recommend
-      },{
+      }, {
         path: 'toplist',
         component: TopList
       },
@@ -43,10 +45,10 @@ const routes = [{
       },
     ]
   },
-  // {
-  //   path: '/discover/toplist',
-  //   component: TopList
-  // },
+  {
+    path: '/search',
+    component: Search
+  },
   // {
   //   path: '/discover/playlist',
   //   component: PlayList

@@ -7,6 +7,9 @@ const mutations = {
   },
   changeLyric(state,lyric) {
     state.lyricString = lyric
+  },
+  removeList(state,info) {
+    info.listShow = false
   }
 }
 

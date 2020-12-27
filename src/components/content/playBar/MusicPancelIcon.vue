@@ -1,9 +1,9 @@
 <template>
   <div class="icons">
-    <i class="icon1 all-playlist-bg"></i>
-    <i class="icon2 all-playlist-bg"></i>
-    <i class="icon3 all-playlist-bg"></i>
-    <i class="icon4 all-playlist-bg"></i>
+    <div @click="clickIcon1"><slot name="icon1"><i class="icon1 all-playlist-bg"></i></slot></div>
+    <div @click="clickIcon2"><slot name="icon2"><i class="icon2 all-playlist-bg"></i></slot></div>
+    <div @click="clickIcon3"><slot name="icon3"><i class="icon3 all-playlist-bg"></i></slot></div>
+    <div @click="clickIcon4"><slot name="icon4"><i class="icon4 all-playlist-bg"></i></slot></div>
   </div>
 </template>
 
@@ -22,7 +22,18 @@
 
     },
     methods: {
-
+      clickIcon1() {
+        this.$emit('clickIcon1')
+      },
+      clickIcon2() {
+        this.$emit('clickIcon2')
+      },
+      clickIcon3() {
+        this.$emit('clickIcon3')
+      },
+      clickIcon4() {
+        this.$emit('clickIcon4')
+      },
     },
   }
 </script>

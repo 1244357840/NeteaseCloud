@@ -1,5 +1,5 @@
 <template>
-  <div class="main-bar">
+  <div class="main-bar" :class="{hidden:!showBar}">
     <music-pancel :musicList="getList"></music-pancel>
     <div class="lyric-container">
       <div class="lyric-content">
@@ -18,9 +18,10 @@
   export default {
     name: '',
     props: {
-      // lyricData: {
-      //   type: String,
-      // }
+      showBar: {
+        type: Boolean,
+        default: false
+      }
     },
     data() {
       return {
@@ -37,7 +38,8 @@
     computed: {
       getList() {
         return this.$store.getters.getList
-      }
+      },
+
     },
     mounted() {
       this.$bus.$on('_changeLyric',(lyricData) => {
@@ -55,6 +57,7 @@
 </script>
 
 <style scoped lang="scss">
+
   .main-bar {
     background-color: black;
     height: 196px;
@@ -75,7 +78,6 @@
         height: 100%;
         width: 100%;
         text-align: center;
-        overflow-y: scroll;
         position: relative;
 
         .lyric-line{
@@ -100,5 +102,9 @@
         }
       }
     }
+  }
+  
+  .hidden {
+    bottom: -196px;
   }
 </style>
